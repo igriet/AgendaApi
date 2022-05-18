@@ -8,7 +8,6 @@ namespace AgendaApi.Service
     {
         private readonly string _path = $"{Environment.CurrentDirectory}\\Data\\AgendaData.json";
         
-
         public async Task<Guid> Create(Contact newContact)
         {
             var getContactsTask = Read();
@@ -17,9 +16,7 @@ namespace AgendaApi.Service
 
             var contactList = getContactsTask.Result.ToList();
             contactList.Add(newContact);
-            Agenda newAgenda = new Agenda();
-            newAgenda.Contacts = contactList;
-            string newJsonAgenda = JsonSerializer.Serialize<Agenda>(newAgenda);
+            string newJsonAgenda = JsonSerializer.Serialize<List<Contact>>(contactList);
             File.WriteAllText(_path, newJsonAgenda);
             return newContact.Id;
         }
@@ -31,9 +28,8 @@ namespace AgendaApi.Service
 
             var contactList = getContactsTask.Result.ToList();
             contactList.RemoveAll(c => c.Id == id);
-            Agenda newAgenda = new Agenda();
-            newAgenda.Contacts = contactList;
-            string newJsonAgenda = JsonSerializer.Serialize<Agenda>(newAgenda);
+            
+            string newJsonAgenda = JsonSerializer.Serialize<List<Contact>>(contactList);
             File.WriteAllText(_path, newJsonAgenda);
 
             return true;
@@ -50,9 +46,9 @@ namespace AgendaApi.Service
         public async Task<IEnumerable<Contact>> Read()
         {
             using FileStream jsonStream = new FileStream(_path, FileMode.Open);
-            Agenda agenda = await JsonSerializer.DeserializeAsync<Agenda>(jsonStream);
+            IEnumerable<Contact> agenda = await JsonSerializer.DeserializeAsync<IEnumerable<Contact>>(jsonStream);
 
-            return agenda.Contacts;
+            return agenda;
         }
 
         public async Task<Contact> Update(Guid id, Contact contactUpdated)
@@ -69,12 +65,9 @@ namespace AgendaApi.Service
             contact.Name = contactUpdated.Name;
             contact.Phone = contactUpdated.Phone;
             contact.Email = contactUpdated.Email;
-            contactList.Add(contact);
+            contactList.Add(contact);            
 
-            Agenda newAgenda = new Agenda();
-            newAgenda.Contacts = contactList;
-
-            string newJsonAgenda = JsonSerializer.Serialize<Agenda>(newAgenda);
+            string newJsonAgenda = JsonSerializer.Serialize<List<Contact>>(contactList);
             File.WriteAllText(_path, newJsonAgenda);
 
             return contact;

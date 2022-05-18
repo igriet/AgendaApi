@@ -9,10 +9,5 @@ namespace AgendaApi.Model
         public string Phone { get; set; }
         public string Email { get; set; }
     }
-
-    public class Agenda
-    {
-        public List<Contact> Contacts { get; set; }
-    }
 }
 
