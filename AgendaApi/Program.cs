@@ -1,10 +1,14 @@
-using AgendaApi.Interface;
+using AgendaApi.Interface.Data;
+using AgendaApi.Interface.Service;
+using AgendaApi.Model;
+using AgendaApi.Repository;
 using AgendaApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddTransient<IService, ContactService>();
+builder.Services.AddTransient<IAgendaService, AgendaService>();
+builder.Services.AddTransient<IAgendaRepository, AgendaRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,4 +1,4 @@
-﻿using AgendaApi.Interface;
+﻿using AgendaApi.Interface.Service;
 using AgendaApi.Model;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +10,8 @@ namespace AgendaApi.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        private readonly IService _service;
-        public ContactController(IService service)
+        private readonly IAgendaService _service;
+        public ContactController(IAgendaService service)
         {
             _service = service;
         }
@@ -20,7 +20,7 @@ namespace AgendaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Contact>>> Get()
         {
-            IEnumerable<Contact> contacts =await _service.Read();
+            IEnumerable<Contact> contacts =await _service.GetAll();
             return Ok(contacts);
         }
 
