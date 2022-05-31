@@ -1,5 +1,6 @@
 ﻿using AgendaApi.Interface.Data;
 using AgendaApi.Interface.Service;
+using AgendaApi.Logging;
 using AgendaApi.Model;
 using System.Text.Json;
 
@@ -9,9 +10,11 @@ namespace AgendaApi.Service
     {
         private readonly string _path = $"{Environment.CurrentDirectory}\\Data\\AgendaData.json";
         private readonly IAgendaRepository _repository;
+        private readonly ILogManager _logger;
 
-        public AgendaService(IAgendaRepository repository)
+        public AgendaService(ILogManager logger, IAgendaRepository repository)
         {
+            _logger = logger;
             _repository = repository;            
         }
 
@@ -47,10 +50,15 @@ namespace AgendaApi.Service
 
         private async Task<Contact> GetAsync(Guid id)
         {
-            Task<IEnumerable<Contact>> getContactsTask = GetAllAsync();
-            IEnumerable<Contact> contactList = await getContactsTask;
+            IEnumerable<Contact> contactList = await GetAllAsync();
 
-            return contactList.FirstOrDefault(c => c.Id == id);
+            if (contactList == null)
+            {
+                _logger.LogError("Lista de contactos vacia");
+                throw new Exception("Lista de contactos vacia");
+            }
+
+            return contactList.Any(c => c.Id == id) ? contactList.FirstOrDefault(c => c.Id == id) : throw new Exception($"Este contacto no existe");
         }
 
         private async Task<bool> CreateAsync(IEnumerable<Contact> contactList)
@@ -60,8 +68,7 @@ namespace AgendaApi.Service
 
         private async Task<Guid> CreateAsync(Contact newContact)
         {
-            Task<IEnumerable<Contact>> getContactsTask = GetAllAsync();
-            List<Contact> contactList = (await getContactsTask).ToList();
+            List<Contact> contactList = (await GetAllAsync()).ToList();
             contactList.Add(newContact);
 
             if (await CreateAsync(contactList))
@@ -72,8 +79,7 @@ namespace AgendaApi.Service
 
         private async Task<bool> DeleteAsync(Guid id)
         {
-            Task<IEnumerable<Contact>> getContactsTask = GetAllAsync();
-            List<Contact> contactList = (await getContactsTask).ToList();
+            List<Contact> contactList = (await GetAllAsync()).ToList();
             contactList.RemoveAll(c => c.Id == id);
 
             return await CreateAsync(contactList);
@@ -82,9 +88,8 @@ namespace AgendaApi.Service
         private async Task<Contact> UpdateAsync(Guid id, Contact newContact)
         {
             newContact.Id = id;
-            Task<IEnumerable<Contact>> getContactsTask = GetAllAsync();
-            List<Contact> contactList = (await getContactsTask).ToList();
-            int indexOldContact = contactList.ToList().FindIndex(c => c.Id == id);
+            List<Contact> contactList = (await GetAllAsync()).ToList();
+            int indexOldContact = contactList.FindIndex(c => c.Id == id);
             contactList[indexOldContact] = newContact;
             await CreateAsync(contactList);
 
