@@ -3,6 +3,6 @@
     public interface IRepository<T> where T : class
     {
         Task<IEnumerable<T>> ReadAsync();
-        Task<bool> Write(IEnumerable<T> newCollection);
+        Task<bool> WriteAsync(IEnumerable<T> newCollection);
     }
 }

@@ -32,7 +32,7 @@ namespace AgendaApi.Repository
             }
         }
 
-        public async Task<bool> Write(IEnumerable<Contact> newCollection)
+        public async Task<bool> WriteAsync(IEnumerable<Contact> newCollection)
         {
             try
             {

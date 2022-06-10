@@ -1,6 +1,7 @@
 ﻿using AgendaApi.Interface.Service;
 using AgendaApi.Logging;
 using AgendaApi.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,6 +22,7 @@ namespace AgendaApi.Controllers
 
         // GET: api/<ContactController>
         [HttpGet]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<Contact>>> Get()
         {
             try
@@ -39,6 +41,7 @@ namespace AgendaApi.Controllers
 
         // GET api/<ContactController>/5
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<Contact>> Get(Guid id)
         {
             try
@@ -57,6 +60,7 @@ namespace AgendaApi.Controllers
 
         // POST api/<ContactController>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Post([FromBody] Contact newContact)
         {
             try
@@ -75,6 +79,7 @@ namespace AgendaApi.Controllers
 
         // PUT api/<ContactController>/5
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult> Put(Guid id, [FromBody] Contact updateContact)
         {
             try
@@ -93,6 +98,7 @@ namespace AgendaApi.Controllers
 
         // DELETE api/<ContactController>/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

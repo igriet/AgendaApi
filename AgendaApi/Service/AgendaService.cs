@@ -63,7 +63,7 @@ namespace AgendaApi.Service
 
         private async Task<bool> CreateAsync(IEnumerable<Contact> contactList)
         {
-            return await _repository.Write(contactList);
+            return await _repository.WriteAsync(contactList);
         }
 
         private async Task<Guid> CreateAsync(Contact newContact)
